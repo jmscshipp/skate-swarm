@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private Transform directionalArrowUI;
+    [SerializeField]
+    private Image pushUI;
     private Vector3 screenCenter;
 
     // amount the player is raised about the ground
@@ -23,6 +25,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private LayerMask groundMask;
 
+    [SerializeField]
+    private AnimationCurve jumpCurve;
+    private float jumpTimer;
+    private float jumpTime;
+    private bool trickPrepped = false;
+    private bool airBorne = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,10 +39,11 @@ public class PlayerController : MonoBehaviour
         
         screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
         movementSpeed = BalanceSettings.movementSpeed;
+        jumpTime = BalanceSettings.jumpTime;
         rb = GetComponent<Rigidbody>();
 
-        pushQueue = new PushQueue();
-        pushQueue.AddPush();
+        pushQueue = new PushQueue(pushUI);
+        pushQueue.Push();
     }
 
     // Update is called once per frame
@@ -56,10 +66,29 @@ public class PlayerController : MonoBehaviour
         transform.localRotation = Quaternion.Euler(new Vector3(0f, 405f + moveDir, 0f));
 
 
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-            pushQueue.AddPush();
+        // pushing
+        if (Input.GetKey(KeyCode.Mouse0))
+            pushQueue.Push();
+        // 
+        else if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            if (!trickPrepped)
+                PrepTrick();
+            else
+                CompleteTrick();
+        }
 
         pushQueue.Update(Time.deltaTime);
+
+        if (airBorne)
+        {
+            jumpTimer += Time.deltaTime;
+            if (jumpTimer >= 1)
+            {
+                trickPrepped = false;
+                airBorne = false;
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -68,6 +97,12 @@ public class PlayerController : MonoBehaviour
         rb.velocity = transform.forward * Time.fixedDeltaTime * movementSpeed * 
             pushDecayCurve.Evaluate(pushQueue.GetPushProgress());
 
+        if (airBorne && jumpTimer < 1f)
+        {
+            rb.velocity = new Vector3(rb.velocity.x, 
+                jumpCurve.Evaluate(jumpTimer / 1f) * 2f, rb.velocity.z);
+            return;
+        }
         // snap player to whatever elevation is below them
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), 
@@ -83,5 +118,17 @@ public class PlayerController : MonoBehaviour
             Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * 
                 1000, Color.red);
         }
+    }
+
+    private void PrepTrick()
+    {
+        airBorne = true;
+        jumpTimer = 0f;
+        trickPrepped = true;
+    }
+
+    private void CompleteTrick()
+    {
+
     }
 }
