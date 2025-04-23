@@ -20,8 +20,6 @@ public class SkateboardShadow : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log("startDistance: " + shadowStartDistance + "current distance; " + Vector3.Distance(
-            shadowParent.position, transform.position));
         shadowParent.localScale = Vector3.one * Mathf.Lerp(1f, minShadowSize, Vector3.Distance(
             shadowParent.position, transform.position));
     }
