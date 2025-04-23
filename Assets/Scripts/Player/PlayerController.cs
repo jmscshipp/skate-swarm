@@ -27,57 +27,61 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         UnityEngine.Cursor.visible = false;
+        
         screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
         movementSpeed = BalanceSettings.movementSpeed;
         rb = GetComponent<Rigidbody>();
+
         pushQueue = new PushQueue();
         pushQueue.AddPush();
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        //Vector3 moveDir = (Camera.main.WorldToScreenPoint(transform.position) - Input.mousePosition).normalized;
-        //rb.velocity = moveDir * movementSpeed;
-        //Debug.DrawRay(transform.position, moveDir * 5f, Color.green);
-        //transform.Translate(moveDir * Time.deltaTime * movementSpeed * pushDecayCurve.Evaluate(pushQueue.GetPushProgress()));
-        //
-        //Debug.Log("push progress: " + pushQueue.GetPushProgress());
-        //transform.position = new Vector3(transform.position.x, transform.position.y, 0f);
-        //
-        //
-        //if (Input.GetKeyDown(KeyCode.Mouse0))
-        //{
-        //    pushQueue.AddPush();
-        //}
-        //
-        //pushQueue.Update(Time.deltaTime);
+        // update direction arrow UI to follow player pos
+        directionalArrowUI.transform.position = new Vector3(transform.position.x,
+            transform.position.y + 0.35f, transform.position.z);
+
+        // calculating the angle between the mouse and center of screen
+        float moveDir = Mathf.Atan2(screenCenter.x - Input.mousePosition.x,
+            screenCenter.y - Input.mousePosition.y) * Mathf.Rad2Deg;
+
+        // rotate arrow UI in that direction
+        directionalArrowUI.transform.localRotation = Quaternion.Euler(
+            new Vector3(0f, 0f, 180f - moveDir));
+
+        // rotate player to face matching way (needs different offset because
+        // of isographic weirdness)
+        transform.localRotation = Quaternion.Euler(new Vector3(0f, 405f + moveDir, 0f));
+
+
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+            pushQueue.AddPush();
+
+        pushQueue.Update(Time.deltaTime);
     }
+
     private void FixedUpdate()
     {
-        Vector3 moveDir = (screenCenter - Input.mousePosition).normalized;
-        Debug.Log(Input.mousePosition);
-        moveDir = new Vector3 (moveDir.x, 0f, moveDir.y);
-        Debug.DrawRay(transform.position, moveDir * 5f, Color.green);
-        rb.velocity = moveDir * Time.fixedDeltaTime * 100f;
+        // move based on push and angle from mouse position
+        rb.velocity = transform.forward * Time.fixedDeltaTime * movementSpeed * 
+            pushDecayCurve.Evaluate(pushQueue.GetPushProgress());
 
-        // rotate arrow UI in direction player is going
-        directionalArrowUI.transform.localRotation = Quaternion.Euler(
-            new Vector3(0f, 0f, 180f - (Mathf.Atan2(screenCenter.x - Input.mousePosition.x, 
-            screenCenter.y - Input.mousePosition.y) * Mathf.Rad2Deg)));
-
-        //RaycastHit hit;
-        //if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out hit, Mathf.Infinity, groundMask))
-        //{
-        //    Debug.Log("hit " + hit.transform.gameObject.name);
-        //    Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * hit.distance, Color.white);
-        //    transform.position = new Vector3(transform.position.x, hit.point.y + playerDistanceFromGround, transform.position.z);
-        //}
-        //else
-        //{
-        //    Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * 1000, Color.red);
-        //}
+        // snap player to whatever elevation is below them
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), 
+            out hit, Mathf.Infinity, groundMask))
+        {
+            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * 
+                hit.distance, Color.white);
+            transform.position = new Vector3(transform.position.x, hit.point.y + 
+                playerDistanceFromGround, transform.position.z);
+        }
+        else
+        {
+            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * 
+                1000, Color.red);
+        }
     }
-
 }
