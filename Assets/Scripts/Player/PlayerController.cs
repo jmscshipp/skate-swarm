@@ -67,7 +67,7 @@ public class PlayerController : MonoBehaviour
 
 
         // pushing
-        if (Input.GetKey(KeyCode.Mouse0))
+        if (Input.GetKey(KeyCode.Mouse0) && !airBorne)
             pushQueue.Push();
         // 
         else if (Input.GetKeyDown(KeyCode.Mouse1))
@@ -122,8 +122,9 @@ public class PlayerController : MonoBehaviour
 
     private void PrepTrick()
     {
-        airBorne = true;
         jumpTimer = 0f;
+        pushQueue.Push();
+        airBorne = true;
         trickPrepped = true;
     }
 
