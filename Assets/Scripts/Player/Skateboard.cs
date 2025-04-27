@@ -13,10 +13,19 @@ public class Skateboard : MonoBehaviour
     private Quaternion goalRotation;
     private Quaternion checkPointRotation;
 
-    // Start is called before the first frame update
-    void Start()
+    private static Skateboard instance;
+
+    private void Awake()
     {
-        
+        // setting up singleton
+        if (instance != null && instance != this)
+            Destroy(this);
+        instance = this;
+    }
+
+    public static Skateboard Instance()
+    {
+        return instance;
     }
 
     // Update is called once per frame

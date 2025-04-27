@@ -73,7 +73,7 @@ public class PlayerController : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             if (!trickPrepped)
-                PrepTrick();
+                StartCoroutine(PrepTrick());
             else
                 CompleteTrick();
         }
@@ -120,12 +120,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void PrepTrick()
+    private IEnumerator PrepTrick()
     {
         jumpTimer = 0f;
         pushQueue.Push();
         airBorne = true;
         trickPrepped = true;
+
+        yield return new WaitForSeconds(0.3f);
+        TrickPopupUI.Instance().ActivateTrickPopup();
     }
 
     private void CompleteTrick()
