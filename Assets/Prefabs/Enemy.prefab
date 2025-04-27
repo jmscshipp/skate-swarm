@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4144049300350206927}
   - component: {fileID: 4636431800598073852}
   - component: {fileID: 2280184918075044248}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -48,6 +48,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcdb91a746f88c448bb4307cd87a7adf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skins:
+  - {fileID: 2100000, guid: c381d8cc97d968f4e9bff8f0a9012325, type: 2}
+  - {fileID: 2100000, guid: 405839b5fb1ed864f9cc586fa11c69ff, type: 2}
+  - {fileID: 2100000, guid: ec244efcb13d92d47a90b54256caa0d0, type: 2}
+  - {fileID: 2100000, guid: 3a58a762600d9a94bba875ca3534f498, type: 2}
+  allWhiteMat: {fileID: 2100000, guid: 81b81c964e1e1af4c8262fb748c36f49, type: 2}
+  renderers:
+  - {fileID: 8529317183752693486}
+  - {fileID: 7507620454080627064}
+  skateBoardMesh: {fileID: 5411170153864943025}
 --- !u!195 &4636431800598073852
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -85,7 +95,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -283,6 +293,16 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ec9c6e858a12540439415d8c355f7d3d, type: 3}
   m_PrefabInstance: {fileID: 1291172947588083435}
   m_PrefabAsset: {fileID: 0}
+--- !u!137 &7507620454080627064 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8780691006778126227, guid: ec9c6e858a12540439415d8c355f7d3d, type: 3}
+  m_PrefabInstance: {fileID: 1291172947588083435}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &8529317183752693486 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7472899212689147909, guid: ec9c6e858a12540439415d8c355f7d3d, type: 3}
+  m_PrefabInstance: {fileID: 1291172947588083435}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6690593349724948789
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -351,6 +371,11 @@ PrefabInstance:
       addedObject: {fileID: 3933768178309371294}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c2602e90679b70147b40aaa49c4c5d11, type: 3}
+--- !u!23 &5411170153864943025 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: c2602e90679b70147b40aaa49c4c5d11, type: 3}
+  m_PrefabInstance: {fileID: 6690593349724948789}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6580737936420974302 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c2602e90679b70147b40aaa49c4c5d11, type: 3}
