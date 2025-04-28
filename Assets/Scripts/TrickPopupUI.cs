@@ -65,6 +65,7 @@ public class TrickPopupUI : MonoBehaviour
                 succeeded = true;
                 popupImage.sprite = successGraphic;
                 Skateboard.Instance().KickFlip();
+                player.GetComponent<PlayerController>().CompleteTrick();
             }
         }
     }

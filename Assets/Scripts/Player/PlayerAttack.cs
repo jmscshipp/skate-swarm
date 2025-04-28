@@ -27,12 +27,6 @@ public class PlayerAttack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // TEMP
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            Attack(transform.position);
-        }
-
         if (attacking)
         {
             lerp += Time.deltaTime * 3f;
@@ -59,10 +53,10 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-    public void Attack(Vector3 position)
+    public void Attack()
     {
-        attack1.position = position;
-        attack2.position = position;
+        attack1.position = transform.position;
+        attack2.position = transform.position;
         attack1.gameObject.SetActive(true);
         attack2.gameObject.SetActive(true);
         lerp = 0f;

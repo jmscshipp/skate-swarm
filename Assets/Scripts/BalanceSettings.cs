@@ -6,8 +6,6 @@ public static class BalanceSettings
 {
     // how strong the jump is
     public static float jumpPower = 2f;
-    // how long player is in air for during jump
-    public static float jumpTime = 2f; 
     // how long it takes for a push to peter out to 0f
     public static float pushTime = 2f;
     // how fast player travels at beginning of a push

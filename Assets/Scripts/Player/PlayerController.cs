@@ -28,9 +28,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private AnimationCurve jumpCurve;
     private float jumpTimer;
-    private float jumpTime;
     private bool trickPrepped = false;
     private bool airBorne = false;
+    private Vector3 jumpPeak;
+    private float gravityTimer;
+    private bool trickCompletedSuccesfully;
+    private PlayerAttack playerAttack;
 
     // Start is called before the first frame update
     void Start()
@@ -39,8 +42,9 @@ public class PlayerController : MonoBehaviour
         
         screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
         movementSpeed = BalanceSettings.movementSpeed;
-        jumpTime = BalanceSettings.jumpTime;
+
         rb = GetComponent<Rigidbody>();
+        playerAttack = GetComponent<PlayerAttack>();
 
         pushQueue = new PushQueue(pushUI);
         pushQueue.Push();
@@ -61,6 +65,10 @@ public class PlayerController : MonoBehaviour
         directionalArrowUI.transform.localRotation = Quaternion.Euler(
             new Vector3(0f, 0f, 180f - moveDir));
 
+
+        // come back and make rotation locked in the air..
+        //if (!airBorne)
+            
         // rotate player to face matching way (needs different offset because
         // of isographic weirdness)
         transform.localRotation = Quaternion.Euler(new Vector3(0f, 405f + moveDir, 0f));
@@ -74,8 +82,6 @@ public class PlayerController : MonoBehaviour
         {
             if (!trickPrepped)
                 StartCoroutine(PrepTrick());
-            else
-                CompleteTrick();
         }
 
         pushQueue.Update(Time.deltaTime);
@@ -83,10 +89,13 @@ public class PlayerController : MonoBehaviour
         if (airBorne)
         {
             jumpTimer += Time.deltaTime;
+            // height of jump
             if (jumpTimer >= 1)
             {
                 trickPrepped = false;
-                airBorne = false;
+                // save jump peak pos for lerping gravity down to ground
+                jumpPeak = transform.position;
+                gravityTimer += Time.deltaTime * 2f;
             }
         }
     }
@@ -103,36 +112,56 @@ public class PlayerController : MonoBehaviour
                 jumpCurve.Evaluate(jumpTimer / 1f) * 2f, rb.velocity.z);
             return;
         }
-        // snap player to whatever elevation is below them
+
+        // get y pos of ground
+        float groundYPos = 0f;
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), 
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down),
             out hit, Mathf.Infinity, groundMask))
         {
-            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * 
-                hit.distance, Color.white);
-            transform.position = new Vector3(transform.position.x, hit.point.y + 
-                playerDistanceFromGround, transform.position.z);
+            groundYPos = hit.point.y;
         }
+
+        // snap player to whatever elevation is below them
+        if (!airBorne)
+        {
+            transform.position = new Vector3(transform.position.x, groundYPos +
+                   playerDistanceFromGround, transform.position.z);
+        }
+        // lower player to the ground with gravity
         else
         {
-            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.down) * 
-                1000, Color.red);
+            transform.position = new Vector3(transform.position.x, Mathf.Lerp(
+                groundYPos + playerDistanceFromGround, jumpPeak.y, 
+                jumpCurve.Evaluate(gravityTimer)),
+                transform.position.z);
+        }
+
+        // check if we've returned to the ground after doing a trick
+        if (airBorne && Mathf.Abs(transform.position.y - groundYPos) < 0.15f)
+        {
+            if (trickCompletedSuccesfully)
+                playerAttack.Attack();
+            airBorne = false;
         }
     }
 
     private IEnumerator PrepTrick()
     {
+        gravityTimer = 0f;
         jumpTimer = 0f;
         pushQueue.Push();
         airBorne = true;
         trickPrepped = true;
+        trickCompletedSuccesfully = false;
 
         yield return new WaitForSeconds(0.3f);
         TrickPopupUI.Instance().ActivateTrickPopup();
     }
 
-    private void CompleteTrick()
+    public void CompleteTrick()
     {
-
+        pushQueue.Push();
+        trickCompletedSuccesfully = true;
     }
 }
