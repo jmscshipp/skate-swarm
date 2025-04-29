@@ -103,6 +103,8 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        SkatingSound.Instance().SetVolume(rb.velocity.magnitude / 3f);
+
         // move based on push and angle from mouse position
         rb.velocity = transform.forward * Time.fixedDeltaTime * movementSpeed * 
             pushDecayCurve.Evaluate(pushQueue.GetPushProgress());
@@ -144,8 +146,11 @@ public class PlayerController : MonoBehaviour
             if (trickCompletedSuccesfully)
                 playerAttack.Attack();
             AudioManager.Instance().PlaySound("landing");
+
             airBorne = false;
         }
+
+        SkatingSound.Instance().TurnOnSound(true);
     }
 
     private IEnumerator PrepTrick()
@@ -157,6 +162,7 @@ public class PlayerController : MonoBehaviour
         trickPrepped = true;
         trickCompletedSuccesfully = false;
         AudioManager.Instance().PlaySound("jump");
+        SkatingSound.Instance().TurnOnSound(false);
 
         yield return new WaitForSeconds(0.3f);
         TrickPopupUI.Instance().ActivateTrickPopup();
