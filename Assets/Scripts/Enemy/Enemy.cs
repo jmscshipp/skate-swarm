@@ -22,6 +22,11 @@ public class Enemy : MonoBehaviour
     private NavMeshAgent agent;
     private Material thisSkin;
 
+    private bool expanding = true;
+    private float expandLerp = 0f;
+    [SerializeField]
+    private GameObject characterObj;
+
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -39,31 +44,41 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        agent.SetDestination(EnemyDestinations.Instance().GetRandomDestination().position);
+        agent.SetDestination(EnemyDestinations.Instance().GetRandomDestination(transform.position));
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (agent.pathStatus == NavMeshPathStatus.PathComplete && agent.remainingDistance <= 0.05f)
+        if (expanding)
         {
-            agent.SetDestination(EnemyDestinations.Instance().GetRandomDestination().position);
+            expandLerp += Time.deltaTime * 2f;
+            characterObj.transform.localScale = Vector3.one * Mathf.Clamp(expandLerp, 0f, 1f);
+            if (expandLerp >= 1f)
+                expanding = false;
+        }
+
+        if (agent.enabled && agent.pathStatus == NavMeshPathStatus.PathComplete && agent.remainingDistance <= 0.05f)
+        {
+            agent.SetDestination(EnemyDestinations.Instance().GetRandomDestination(transform.position));
         }
     }
 
     private void OnTriggerEnter(UnityEngine.Collider other)
     {
-        if (other.gameObject.tag == "Enemey")
-            agent.SetDestination(EnemyDestinations.Instance().GetRandomDestination().position);
-
         if (other.gameObject.tag == "PlayerAttack")
             StartCoroutine(Death(other.transform.position));
+        if (other.gameObject.tag == "Player")
+        {
+            StartCoroutine(other.GetComponent<PlayerController>().TakeDamage());
+        }
     }
 
     private IEnumerator Death(Vector3 playerPos)
     {
         AudioManager.Instance().PlaySound("hit");
         agent.enabled = false;
+        GetComponent<CapsuleCollider>().enabled = false;
         // here working on rotating enemies slightly away from player
         //transform.rotation = Quaternion.Euler(Vector3.RotateTowards(transform.position, playerPos, 0.5f, 0.5f));
 

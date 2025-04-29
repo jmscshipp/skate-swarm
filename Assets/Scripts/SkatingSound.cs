@@ -42,7 +42,7 @@ public class SkatingSound : MonoBehaviour
 
     public void TurnOnSound(bool on)
     {
-        source.enabled = on;
+        source.gameObject.SetActive(on);
     }
 
     public void SetVolume(float volume)

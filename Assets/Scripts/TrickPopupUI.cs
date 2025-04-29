@@ -10,8 +10,6 @@ public class TrickPopupUI : MonoBehaviour
     private Sprite defaultGraphic;
     [SerializeField]
     private Sprite failedGraphic;
-    [SerializeField]
-    private Sprite successGraphic;
 
     private Image popupImage;
     private GameObject player;
@@ -63,7 +61,7 @@ public class TrickPopupUI : MonoBehaviour
             else if (!succeeded && Input.GetKeyDown(KeyCode.Mouse1))
             {
                 succeeded = true;
-                popupImage.sprite = successGraphic;
+                popupImage.enabled = false;
                 Skateboard.Instance().KickFlip();
                 player.GetComponent<PlayerController>().CompleteTrick();
             }

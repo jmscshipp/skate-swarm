@@ -60,6 +60,7 @@ MonoBehaviour:
   skateBoardMesh: {fileID: 5411170153864943025}
   boyBodyMesh: {fileID: -8995563128620110768, guid: fd25fe44bfb6755459e181fbd586649b, type: 3}
   boyHeadMesh: {fileID: 5507760748409398153, guid: fd25fe44bfb6755459e181fbd586649b, type: 3}
+  characterObj: {fileID: 2101566004740608954}
 --- !u!195 &4636431800598073852
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -69,7 +70,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 3042876032782858820}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.39
+  m_Radius: 0.1
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -293,6 +294,11 @@ PrefabInstance:
 --- !u!4 &1612732358365645056 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ec9c6e858a12540439415d8c355f7d3d, type: 3}
+  m_PrefabInstance: {fileID: 1291172947588083435}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2101566004740608954 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: ec9c6e858a12540439415d8c355f7d3d, type: 3}
   m_PrefabInstance: {fileID: 1291172947588083435}
   m_PrefabAsset: {fileID: 0}
 --- !u!137 &7507620454080627064 stripped

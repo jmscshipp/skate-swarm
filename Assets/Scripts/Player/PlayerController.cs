@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
@@ -38,7 +39,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private MomentumUI momentumUI;
     private float momentum = 0f;
-
+    private MeshRenderer[] renderers;
+    private float health = 100f;
+    [SerializeField]
+    private Material defaultMat;
+    [SerializeField]
+    private Material allWhiteMat;
     // Start is called before the first frame update
     void Start()
     {
@@ -50,7 +56,7 @@ public class PlayerController : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
         playerAttack = GetComponent<PlayerAttack>();
-
+        renderers = GetComponentsInChildren<MeshRenderer>();
         pushQueue = new PushQueue(pushUI);
         pushQueue.Push();
     }
@@ -58,6 +64,8 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.Log(health);
+        health = Mathf.Clamp(health + Time.deltaTime, 0f, 100f);
         // update direction arrow UI to follow player pos
         directionalArrowUI.transform.position = new Vector3(transform.position.x,
             transform.position.y + 0.35f, transform.position.z);
@@ -104,11 +112,11 @@ public class PlayerController : MonoBehaviour
         }
         else if (rb.velocity.magnitude > .1f)
         {
-            momentum += Time.deltaTime;
+            momentum = Mathf.Clamp(momentum + Time.deltaTime, 0f, BalanceSettings.momentumBuildUpTime);
         }
         else
         {
-            momentum -= Time.deltaTime;
+            momentum = Mathf.Clamp(momentum - Time.deltaTime, 0f, BalanceSettings.momentumBuildUpTime);
         }
         momentumUI.UpdateMomentumMeter(momentum);
     }
@@ -187,5 +195,37 @@ public class PlayerController : MonoBehaviour
         AudioManager.Instance().PlaySound("flip");
         pushQueue.Push();
         trickCompletedSuccesfully = true;
+    }
+
+    public IEnumerator TakeDamage()
+    {
+        if (airBorne)
+            yield break;
+
+        health -= 20f;
+        AudioManager.Instance().PlaySound("hurt");
+
+        // flash white
+        foreach (MeshRenderer renderer in renderers)
+            renderer.material = allWhiteMat;
+        yield return new WaitForSeconds(0.1f);
+        // flash skin
+        foreach (MeshRenderer renderer in renderers)
+            renderer.material = defaultMat;
+        yield return new WaitForSeconds(0.1f);
+
+        if (health <= 5f)
+        {
+            AudioManager.Instance().PlaySound("death");
+            // flash white
+            foreach (MeshRenderer renderer in renderers)
+                renderer.material = allWhiteMat;
+            yield return new WaitForSeconds(0.1f);
+            foreach (MeshRenderer renderer in renderers)
+                renderer.enabled = false;
+            yield return new WaitForSeconds(0.5f);
+            EnemyDestinations.Instance().Reset();
+            SceneManager.LoadScene(0);
+        }
     }
 }
