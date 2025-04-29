@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        AudioManager.Instance().PlayMusic("mainTheme");
         UnityEngine.Cursor.visible = false;
         
         screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
@@ -95,7 +96,7 @@ public class PlayerController : MonoBehaviour
                 trickPrepped = false;
                 // save jump peak pos for lerping gravity down to ground
                 jumpPeak = transform.position;
-                gravityTimer += Time.deltaTime * 2f;
+                gravityTimer += Time.deltaTime * 3f;
             }
         }
     }
@@ -142,6 +143,7 @@ public class PlayerController : MonoBehaviour
         {
             if (trickCompletedSuccesfully)
                 playerAttack.Attack();
+            AudioManager.Instance().PlaySound("landing");
             airBorne = false;
         }
     }
@@ -154,6 +156,7 @@ public class PlayerController : MonoBehaviour
         airBorne = true;
         trickPrepped = true;
         trickCompletedSuccesfully = false;
+        AudioManager.Instance().PlaySound("jump");
 
         yield return new WaitForSeconds(0.3f);
         TrickPopupUI.Instance().ActivateTrickPopup();
@@ -161,6 +164,7 @@ public class PlayerController : MonoBehaviour
 
     public void CompleteTrick()
     {
+        AudioManager.Instance().PlaySound("flip");
         pushQueue.Push();
         trickCompletedSuccesfully = true;
     }

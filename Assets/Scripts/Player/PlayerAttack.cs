@@ -65,5 +65,7 @@ public class PlayerAttack : MonoBehaviour
         sprite1.color = Color.white;
         sprite2.color = Color.white;
         attacking = true;
+        AudioManager.Instance().PlaySound("explosion");
+        StartCoroutine(BalanceSettings.ScreenShake());
     }
 }

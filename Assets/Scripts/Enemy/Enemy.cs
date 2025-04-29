@@ -5,16 +5,22 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
-    private NavMeshAgent agent;
     [SerializeField]
     private Material[] skins;
     [SerializeField]
     private Material allWhiteMat;
-    private Material thisSkin;
     [SerializeField]
     private SkinnedMeshRenderer[] renderers;
     [SerializeField]
     private MeshRenderer skateBoardMesh;
+
+    [SerializeField]
+    private Mesh boyBodyMesh;
+    [SerializeField]
+    private Mesh boyHeadMesh;
+
+    private NavMeshAgent agent;
+    private Material thisSkin;
 
     private void Awake()
     {
@@ -22,11 +28,17 @@ public class Enemy : MonoBehaviour
         thisSkin = skins[Random.Range(0, skins.Length)];
         foreach (SkinnedMeshRenderer renderer in renderers)
             renderer.material = thisSkin;
+
+        if (Random.Range(0f, 1f) > 0.5f)
+        {
+            renderers[0].sharedMesh = boyBodyMesh;
+            renderers[1].sharedMesh = boyHeadMesh;
+        }
     }
+
     // Start is called before the first frame update
     void Start()
     {
-
         agent.SetDestination(EnemyDestinations.Instance().GetRandomDestination().position);
     }
 
@@ -50,6 +62,7 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator Death(Vector3 playerPos)
     {
+        AudioManager.Instance().PlaySound("hit");
         agent.enabled = false;
         // here working on rotating enemies slightly away from player
         //transform.rotation = Quaternion.Euler(Vector3.RotateTowards(transform.position, playerPos, 0.5f, 0.5f));

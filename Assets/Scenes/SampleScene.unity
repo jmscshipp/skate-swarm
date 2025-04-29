@@ -759,6 +759,7 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -841,6 +842,62 @@ Transform:
   - {fileID: 1141127598}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 30, y: 225, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7edafd4d90c613e4c97065304fe857d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: jump
+    clip: {fileID: 8300000, guid: 2164d112254c9c34c9b6b93c1ea6b7f9, type: 3}
+    volumeVariationLow: 0
+    volumeVariationHigh: 0
+    baseVolume: 1
+    pitchVariationLow: 0.1
+    pitchVariationHigh: 0.1
+    basePitch: 1
+  - name: landing
+    clip: {fileID: 8300000, guid: ffd038dbbbd2ce24eb44a44af25feca9, type: 3}
+    volumeVariationLow: 0
+    volumeVariationHigh: 0
+    baseVolume: 2
+    pitchVariationLow: 0.1
+    pitchVariationHigh: 0.1
+    basePitch: 1
+  - name: hit
+    clip: {fileID: 8300000, guid: 1bac8592807b9e84c955afede9bc8e8a, type: 3}
+    volumeVariationLow: 0
+    volumeVariationHigh: 0
+    baseVolume: 1
+    pitchVariationLow: 0
+    pitchVariationHigh: 0.3
+    basePitch: 1
+  - name: explosion
+    clip: {fileID: 8300000, guid: f5b9b4e3290ce224682275c668809373, type: 3}
+    volumeVariationLow: 0
+    volumeVariationHigh: 0
+    baseVolume: 0.5
+    pitchVariationLow: 0
+    pitchVariationHigh: 0.2
+    basePitch: 1
+  - name: flip
+    clip: {fileID: 8300000, guid: 80dd8cc147c73374fa18b59d1c619721, type: 3}
+    volumeVariationLow: 0
+    volumeVariationHigh: 0
+    baseVolume: 0.5
+    pitchVariationLow: 0
+    pitchVariationHigh: 0.2
+    basePitch: 1
+  music:
+  - name: mainTheme
+    clip: {fileID: 8300000, guid: e052ee9d0c3adaf44b95d3486f418f64, type: 3}
 --- !u!1 &543456605
 GameObject:
   m_ObjectHideFlags: 0

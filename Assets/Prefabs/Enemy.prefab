@@ -58,6 +58,8 @@ MonoBehaviour:
   - {fileID: 8529317183752693486}
   - {fileID: 7507620454080627064}
   skateBoardMesh: {fileID: 5411170153864943025}
+  boyBodyMesh: {fileID: -8995563128620110768, guid: fd25fe44bfb6755459e181fbd586649b, type: 3}
+  boyHeadMesh: {fileID: 5507760748409398153, guid: fd25fe44bfb6755459e181fbd586649b, type: 3}
 --- !u!195 &4636431800598073852
 NavMeshAgent:
   m_ObjectHideFlags: 0
