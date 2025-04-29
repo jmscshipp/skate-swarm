@@ -60,7 +60,7 @@ public class TrickPopupUI : MonoBehaviour
             {
                 popupImage.sprite = failedGraphic;
             }
-            else if (Input.GetKeyDown(KeyCode.Mouse1))
+            else if (!succeeded && Input.GetKeyDown(KeyCode.Mouse1))
             {
                 succeeded = true;
                 popupImage.sprite = successGraphic;

@@ -35,6 +35,10 @@ public class PlayerController : MonoBehaviour
     private bool trickCompletedSuccesfully;
     private PlayerAttack playerAttack;
 
+    [SerializeField]
+    private MomentumUI momentumUI;
+    private float momentum = 0f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -78,11 +82,11 @@ public class PlayerController : MonoBehaviour
         // pushing
         if (Input.GetKey(KeyCode.Mouse0) && !airBorne)
             pushQueue.Push();
-        // 
-        else if (Input.GetKeyDown(KeyCode.Mouse1))
+        // prep trick
+        else if (Input.GetKeyDown(KeyCode.Mouse1) && !trickPrepped 
+            && momentum >= BalanceSettings.momentumBuildUpTime)
         {
-            if (!trickPrepped)
-                StartCoroutine(PrepTrick());
+            StartCoroutine(PrepTrick());
         }
 
         pushQueue.Update(Time.deltaTime);
@@ -93,12 +97,20 @@ public class PlayerController : MonoBehaviour
             // height of jump
             if (jumpTimer >= 1)
             {
-                trickPrepped = false;
                 // save jump peak pos for lerping gravity down to ground
                 jumpPeak = transform.position;
                 gravityTimer += Time.deltaTime * 3f;
             }
         }
+        else if (rb.velocity.magnitude > .1f)
+        {
+            momentum += Time.deltaTime;
+        }
+        else
+        {
+            momentum -= Time.deltaTime;
+        }
+        momentumUI.UpdateMomentumMeter(momentum);
     }
 
     private void FixedUpdate()
@@ -147,6 +159,7 @@ public class PlayerController : MonoBehaviour
                 playerAttack.Attack();
             AudioManager.Instance().PlaySound("landing");
 
+            trickPrepped = false;
             airBorne = false;
         }
 
@@ -157,6 +170,7 @@ public class PlayerController : MonoBehaviour
     {
         gravityTimer = 0f;
         jumpTimer = 0f;
+        momentum = 0f;
         pushQueue.Push();
         airBorne = true;
         trickPrepped = true;

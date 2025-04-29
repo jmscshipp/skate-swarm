@@ -12,6 +12,8 @@ public static class BalanceSettings
     public static float movementSpeed = 140f;
     // how long player has to complete trick after popup appears
     public static float trickOpportunityTime = 0.5f;
+    // how long player has to skate before being able to do a trick
+    public static float momentumBuildUpTime = 3f;
 
     public static IEnumerator ScreenShake()
     {
