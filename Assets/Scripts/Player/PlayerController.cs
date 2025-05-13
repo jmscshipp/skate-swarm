@@ -68,10 +68,16 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // mouse visiblity stuff for windows version
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            if (UnityEngine.Cursor.visible)
+                Application.Quit();
+
             UnityEngine.Cursor.visible = !UnityEngine.Cursor.visible;
         }
+        if (Input.GetKeyDown(KeyCode.Mouse0) && UnityEngine.Cursor.visible)
+            UnityEngine.Cursor.visible = false;
 
         health = Mathf.Clamp(health + Time.deltaTime, 0f, 100f);
         // update direction arrow UI to follow player pos
