@@ -71,23 +71,18 @@ public class PlayerController : MonoBehaviour
         // mouse visiblity stuff for windows version
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (UnityEngine.Cursor.visible)
-                Application.Quit();
-
             UnityEngine.Cursor.visible = !UnityEngine.Cursor.visible;
         }
-        if (Input.GetKeyDown(KeyCode.Mouse0) && UnityEngine.Cursor.visible)
-            UnityEngine.Cursor.visible = false;
 
         health = Mathf.Clamp(health + Time.deltaTime, 0f, 100f);
         // update direction arrow UI to follow player pos
         directionalArrowUI.transform.position = new Vector3(transform.position.x,
             transform.position.y + 0.35f, transform.position.z);
 
-        // calculating the angle between the mouse and center of screen
-        Vector3 playerPos = Camera.main.WorldToScreenPoint(transform.position);
-        float moveDir = Mathf.Atan2(playerPos.x - Input.mousePosition.x,
-            playerPos.y - Input.mousePosition.y) * Mathf.Rad2Deg;
+        // calculating the angle between the mouse and player
+        //Vector3 playerPos = Camera.main.WorldToScreenPoint(transform.position);
+        float moveDir = Mathf.Atan2(screenCenter.x - Input.mousePosition.x,
+            screenCenter.y - Input.mousePosition.y) * Mathf.Rad2Deg;
 
         // rotate arrow UI in that direction
         directionalArrowUI.transform.localRotation = Quaternion.Euler(
