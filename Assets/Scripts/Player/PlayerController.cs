@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
 
     [SerializeField]
+    private Transform UICamera;
+    [SerializeField]
     private Transform directionalArrowUI;
     [SerializeField]
     private Image pushUI;
@@ -45,12 +47,14 @@ public class PlayerController : MonoBehaviour
     private Material defaultMat;
     [SerializeField]
     private Material allWhiteMat;
+
     // Start is called before the first frame update
     void Start()
     {
         AudioManager.Instance().PlayMusic("mainTheme");
         UnityEngine.Cursor.visible = false;
-        
+        Cursor.lockState = CursorLockMode.Confined;
+
         screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
         movementSpeed = BalanceSettings.movementSpeed;
 
@@ -64,23 +68,24 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(health);
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            UnityEngine.Cursor.visible = !UnityEngine.Cursor.visible;
+        }
+
         health = Mathf.Clamp(health + Time.deltaTime, 0f, 100f);
         // update direction arrow UI to follow player pos
         directionalArrowUI.transform.position = new Vector3(transform.position.x,
             transform.position.y + 0.35f, transform.position.z);
 
         // calculating the angle between the mouse and center of screen
-        float moveDir = Mathf.Atan2(screenCenter.x - Input.mousePosition.x,
-            screenCenter.y - Input.mousePosition.y) * Mathf.Rad2Deg;
+        Vector3 playerPos = Camera.main.WorldToScreenPoint(transform.position);
+        float moveDir = Mathf.Atan2(playerPos.x - Input.mousePosition.x,
+            playerPos.y - Input.mousePosition.y) * Mathf.Rad2Deg;
 
         // rotate arrow UI in that direction
         directionalArrowUI.transform.localRotation = Quaternion.Euler(
             new Vector3(0f, 0f, 180f - moveDir));
-
-
-        // come back and make rotation locked in the air..
-        //if (!airBorne)
             
         // rotate player to face matching way (needs different offset because
         // of isographic weirdness)

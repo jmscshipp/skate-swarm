@@ -48,18 +48,16 @@ public class AudioManager : MonoBehaviour
         if (instance != null && instance != this)
             Destroy(this);
         instance = this;
-    }
 
-    private void Start()
-    {
         musicSource = gameObject.AddComponent<AudioSource>();
+        sources = new List<AudioSource>();
+        OnFadeCompletion = new UnityEvent();
+
         musicSource.volume = 0.0f;
         musicSource.loop = true;
 
         musicFadingIn = false;
         musicFadingout = false;
-        sources = new List<AudioSource>();
-        OnFadeCompletion = new UnityEvent();
     }
 
     public static AudioManager Instance()
